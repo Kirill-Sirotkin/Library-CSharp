@@ -2,11 +2,11 @@ namespace LibraryManagement;
 
 class Library : IBookManage, IBookBorrow
 {
-    private List<ILibraryUser> _users = new();
-    private List<IBook> _books = new();
-    private List<(IBook, Guid)> _borrowedBooks = new();
+    private List<Person> _users = new();
+    private List<Book> _books = new();
+    private List<(Book, Guid)> _borrowedBooks = new();
 
-    public void AddUser(ILibraryUser user)
+    public void AddUser(Person user)
     {
         _users.Add(user);
     }
@@ -18,34 +18,34 @@ class Library : IBookManage, IBookBorrow
 
     public void EditUser(Guid id, string newName)
     {
-        ILibraryUser? user = _users.Find(u => u.Id == id);
+        Person? user = _users.Find(u => u.Id == id);
         if (user is not null) user.Name = newName;
     }
 
-    public void Add(IBook book)
+    public void Add(Book book)
     {
         if (_books.Find(b => b.ISBN == book.ISBN) is not null) return;
         _books.Add(book);
     }
 
-    public void Remove(IBook book)
+    public void Remove(Book book)
     {
         _books = _books.Where(b => b.ISBN != book.ISBN).ToList();
     }
 
-    public void Borrow(IBook book, IIdentifier id)
+    public void Borrow(Book book, Person person)
     {
-        IBook? libraryBook = _books.Find(b => b.ISBN == book.ISBN);
+        Book? libraryBook = _books.Find(b => b.ISBN == book.ISBN);
         if (libraryBook is null) return;
         if (libraryBook is not IBorrowable) return;
 
         Remove(libraryBook);
-        _borrowedBooks.Add((libraryBook, id.Id));
+        _borrowedBooks.Add((libraryBook, person.Id));
     }
 
-    public void Return(IBook book, IIdentifier id)
+    public void Return(Book book, Person person)
     {
-        IBook? borrowedBook = _borrowedBooks.Find(b => b.Item1.ISBN == book.ISBN).Item1;
+        Book? borrowedBook = _borrowedBooks.Find(b => b.Item1.ISBN == book.ISBN).Item1;
         if (borrowedBook is null) return;
 
         _borrowedBooks = _borrowedBooks.Where(b => b.Item1.ISBN != book.ISBN).ToList();
@@ -55,7 +55,7 @@ class Library : IBookManage, IBookBorrow
     public void PrintAllUsers()
     {
         Console.WriteLine("Library users:");
-        foreach (ILibraryUser user in _users)
+        foreach (Person user in _users)
         {
             Console.WriteLine($"{user.Id}: {user.GetType().Name} {user.Name}");
         }
@@ -64,7 +64,7 @@ class Library : IBookManage, IBookBorrow
     public void PrintAllBooks()
     {
         Console.WriteLine("Books information:");
-        foreach (IBook book in _books)
+        foreach (Book book in _books)
         {
             book.PrintInfo();
         }
@@ -73,7 +73,7 @@ class Library : IBookManage, IBookBorrow
     public void PrintAllBorrowed()
     {
         Console.WriteLine("Borrowed books:");
-        foreach ((IBook, Guid) book in _borrowedBooks)
+        foreach ((Book, Guid) book in _borrowedBooks)
         {
             Console.Write($"{book.Item2} borrowed: ");
             book.Item1.PrintInfo();

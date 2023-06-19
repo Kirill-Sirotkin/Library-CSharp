@@ -1,25 +1,16 @@
 namespace LibraryManagement;
 
-class Novel : IBook, IBorrowable
+class Novel : Book, IBorrowable
 {
-    public string Title { get; set; }
-    public string Author { get; set; }
-    public string ISBN { get; set; }
-    public int PublicationYear { get; set; }
-
     private string _genre;
     public string Genre { get => _genre; }
 
-    public Novel(string title, string author, string isbn, int year, string genre)
+    public Novel(string title, string author, string isbn, int year, string genre) : base(title, author, isbn, year)
     {
-        Title = title;
-        Author = author;
-        ISBN = isbn;
-        PublicationYear = year;
         _genre = genre;
     }
 
-    void IBook.PrintInfo()
+    public override void PrintInfo()
     {
         Console.WriteLine($"Book Info: {Title}, {Author} ({PublicationYear}). ISBN:\"{ISBN}\". Genre: {Genre}");
     }

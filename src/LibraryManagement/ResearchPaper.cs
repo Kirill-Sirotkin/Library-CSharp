@@ -1,21 +1,12 @@
 namespace LibraryManagement;
 
-class ResearchPaper : IBook, IPrintable
+class ResearchPaper : Book, IPrintable
 {
-    public string Title { get; set; }
-    public string Author { get; set; }
-    public string ISBN { get; set; }
-    public int PublicationYear { get; set; }
-
     private int _maxPages;
     public int MaxPages => _maxPages;
 
-    public ResearchPaper(string title, string author, string isbn, int year, int maxPages)
+    public ResearchPaper(string title, string author, string isbn, int year, int maxPages) : base(title, author, isbn, year)
     {
-        Title = title;
-        Author = author;
-        ISBN = isbn;
-        PublicationYear = year;
         _maxPages = maxPages;
     }
 
